@@ -1,15 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+//import React from 'react';
+const React = require("react"); // both are valid ways to import
+const ReactDOM = require("react-dom"); // used to inject React components to DOM
+//const SearchBar = require("./components/search_bar.js"); // doesn't work! WHY?
+import SearchBar from './components/search_bar';
+const YTSearch = require("youtube-api-search");
+const API_KEY = "AIzaSyBSvoOrN5v_3oYtaJpm9KoNOMeFvOjpjeE";
 
-import App from './components/app';
-import reducers from './reducers';
+YTSearch({
+    key: API_KEY,
+    term: 'crazy kittens'
+}, function(data) {
+    console.log(data);
+});
 
-const createStoreWithMiddleware = applyMiddleware()(createStore);
+// create component
+const App = () => {
+    return (
+        <div>
+            <SearchBar />
+        </div>
+    );
+}
 
-ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
-    <App />
-  </Provider>
-  , document.querySelector('.container'));
+
+// inject into DOM
+ReactDOM.render(<App></App>, document.querySelector('.container'));
