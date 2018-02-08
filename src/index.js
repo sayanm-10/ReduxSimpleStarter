@@ -4,6 +4,8 @@ const ReactDOM = require("react-dom"); // used to inject React components to DOM
 //const SearchBar = require("./components/search_bar.js"); // doesn't work! WHY?
 import SearchBar from './components/search_bar';
 import VideoList from './components/video_list';
+import VideoDetail from './components/video_detail';
+
 const YTSearch = require("youtube-api-search");
 
 const API_KEY = "AIzaSyBSvoOrN5v_3oYtaJpm9KoNOMeFvOjpjeE";
@@ -13,14 +15,20 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { videos : [] };
+        this.state = {
+             videos : [],
+            selectedVideo : null    
+        };
         const self = this;
 
         YTSearch({
             key: API_KEY,
             term: 'crazy kittens'
         }, videos => {
-            this.setState({ videos });
+            this.setState({
+                videos : videos,
+                selectedVideo : videos[0]
+            });
         });
 
     }
@@ -29,7 +37,9 @@ class App extends React.Component {
         return (
             <div>
                 <SearchBar />
-                <VideoList videos={this.state.videos} />
+                <VideoDetail video={this.state.selectedVideo} />
+                <VideoList onVideoSelect={selectedVideo => this.setState({selectedVideo})} 
+                videos={this.state.videos} />
             </div>
         );
     }
