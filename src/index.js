@@ -1,4 +1,5 @@
 //import React from 'react';
+import _ from 'lodash';
 const React = require("react"); // both are valid ways to import
 const ReactDOM = require("react-dom"); // used to inject React components to DOM
 //const SearchBar = require("./components/search_bar.js"); // doesn't work! WHY?
@@ -19,24 +20,28 @@ class App extends React.Component {
              videos : [],
             selectedVideo : null    
         };
-        const self = this;
 
+        this.searchVideo('krazy kittens');
+    }
+    
+    searchVideo(term) {
         YTSearch({
             key: API_KEY,
-            term: 'crazy kittens'
+            term: term
         }, videos => {
             this.setState({
                 videos : videos,
                 selectedVideo : videos[0]
             });
-        });
-
+        }); 
     }
 
     render() {
+        const SearchVideoDebounced = _.debounce(term => { this.searchVideo(term) }, 500);
+
         return (
             <div>
-                <SearchBar />
+                <SearchBar onSearchTermChange={ SearchVideoDebounced } />
                 <VideoDetail video={this.state.selectedVideo} />
                 <VideoList onVideoSelect={selectedVideo => this.setState({selectedVideo})} 
                 videos={this.state.videos} />
